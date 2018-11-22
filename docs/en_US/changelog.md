@@ -1,6 +1,6 @@
 # Changelog
 
-List of DenonAVC plugin versions.
+List of AcerVP plugin versions.
 
 *[Back to documentation](index.md)*
 
