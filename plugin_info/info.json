@@ -3,7 +3,7 @@
 	"name" : "Acer Video Projecteur",
 	"description" : "Plugin pour piloter les videoprojecteurs Acer",
 	"licence" : "AGPL",
-	"author" : "Chris",
+	"author" : "c.ansel",
 	"require" : "3.0",
 	"category" : "multimedia",
 	"hasDependency" : false,
