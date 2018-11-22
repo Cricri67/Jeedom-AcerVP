@@ -1,7 +1,7 @@
 AcerVP plugin
 =============
 
-! [Logo plugin] (../assets/images/AcerVP_icon.png "Logo plugin")
+![Logo plugin](../assets/images/AcerVP_icon.png "Logo plugin")
 
 Plugin to control Acer projectors via Jeedom.
 
@@ -22,7 +22,7 @@ Plugin to control Acer projectors via Jeedom.
 Dashboard
 =========
 
-! [Dashboard visual] (../assets/images/Dashboard.png "Dashboard visual")
+![Dashboard visual](../assets/images/Dashboard.png "Dashboard visual")
 
 Plugin configuration
 ====================
