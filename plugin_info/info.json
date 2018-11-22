@@ -10,7 +10,7 @@
 	"hasOwnDeamon" : false,
 	"maxDependancyInstallTime" : 0,
 	"changelog" : "https://jeedom.github.io/plugin-template/#language#/changelog.md",
-	"documentation" : "https://jeedom.github.io/plugin-template/#language#/",
+	"documentation" : "https://jeedom.github.io/plugin-template/#language#/index.md",
 	"language" : ["fr_FR","en_US","sp_SP"],
 	"compatibility" : ["miniplus","smart","rpi","docker","diy","mobile"]
 }
