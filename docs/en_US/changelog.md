@@ -2,7 +2,7 @@
 
 List of DenonAVC plugin versions.
 
-* [Back to documentation] (index.md) *
+*[Back to documentation](index.md)*
 
 ## Version of November 22, 2018
 
