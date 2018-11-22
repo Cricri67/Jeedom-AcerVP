@@ -51,4 +51,4 @@ Los comandos básicos se generan automáticamente.
 
 ### Lista de versiones
 
-* [Ver la lista de versiones] (changelog.md) *
+*[Ver la lista de versiones](changelog.md)*
