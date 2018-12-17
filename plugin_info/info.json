@@ -5,7 +5,7 @@
 	"licence" : "AGPL",
 	"author" : "c.ansel",
 	"require" : "3.0",
-	"version" : "1.01"
+	"version" : "1.01",
 	"category" : "multimedia",
 	"hasDependency" : false,
 	"hasOwnDeamon" : false,
