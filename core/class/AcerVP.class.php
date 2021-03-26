@@ -90,13 +90,15 @@ class AcerVP extends eqLogic {
 				$info->setEqLogic_id($this->getId());
 				$info->setLogicalId('Power');
 				$info->setType('info');
+				$info->setSubType('binary');
+				$info->setOrder(0);
 				$info->setIsVisible(0);
 				$info->setIsHistorized(1);
 				$info->setSubType('binary');
 				$info->save();
 			}
 
-			// Information Mise sous tension (On) 
+			// Action Mise sous tension (On) 
 			$cmd = $this->getCmd(null, 'On');
 			if ( ! is_object($cmd)) {
 				$cmd = new AcerVPCmd();
@@ -106,17 +108,18 @@ class AcerVP extends eqLogic {
 				$cmd->setType('action');
 				$cmd->setSubType('other');
 				$cmd->setIsVisible(1);
-				$cmd->setOrder(0);
+				$cmd->setOrder(1);
 				$cmd->setValue($info->getId());
-				$cmd->setTemplate('dashboard', 'PowerOnOff');
-				$cmd->setDisplay('parameters',array ( "color" => "green", "type" => "off", "size" =>30 ));
+				$cmd->setTemplate('dashboard', 'custom::ImgAction');
+				$cmd->setTemplate('mobile', 'custom::ImgAction');
+				$cmd->setDisplay('parameters',array ( "type" => "Power", "largeurDesktop" =>30, "largeurMobile" => 25 ));
 				$cmd->setDisplay('showNameOndashboard','0');
 				$cmd->setDisplay('showNameOnplan','0');
 				$cmd->setDisplay('showNameOnview','0');
 				$cmd->save();
 			}
 
-			// Information Mise hors tension (Off) 
+			// Action Mise hors tension (Off) 
 			$cmd = $this->getCmd(null, 'Off');
 			if ( ! is_object($cmd)) {
 				$cmd = new AcerVPCmd();
@@ -126,10 +129,11 @@ class AcerVP extends eqLogic {
 				$cmd->setType('action');
 				$cmd->setSubType('other');
 				$cmd->setIsVisible(1);
-				$cmd->setOrder(1);
+				$cmd->setOrder(2);
 				$cmd->setValue($info->getId());
-				$cmd->setTemplate('dashboard', 'PowerOnOff');
-				$cmd->setDisplay('parameters',array ( "color" => "green", "type" => "off", "size" =>30 ));
+				$cmd->setTemplate('dashboard', 'custom::ImgAction');
+				$cmd->setTemplate('mobile', 'custom::ImgAction');
+				$cmd->setDisplay('parameters',array ( "type" => "Power", "largeurDesktop" =>30, "largeurMobile" => 25 ));
 				$cmd->setDisplay('showNameOndashboard','0');
 				$cmd->setDisplay('showNameOnplan','0');
 				$cmd->setDisplay('showNameOnview','0');
@@ -145,11 +149,34 @@ class AcerVP extends eqLogic {
 				$info->setLogicalId('Source');
 				$info->setType('info');
 				$info->setSubType('string');
-				$info->setOrder(2);
+				$info->setOrder(3);
+				$info->setIsVisible(0);
 				$info->setDisplay('showNameOndashboard','0');
 				$info->setDisplay('showNameOnplan','0');
 				$info->setDisplay('showNameOnview','0');
 				$info->save();
+			}
+
+			// Action Change source
+			$cmd = $this->getCmd(null, 'Set Src');
+			if ( ! is_object($cmd)) {
+				$cmd = new AcerVPCmd();
+				$cmd->setName('Set Src');
+				$cmd->setEqLogic_id($this->getId());
+				$cmd->setLogicalId('Set Src');
+				$cmd->setType('action');
+				$cmd->setSubType('select');
+				$cmd->setIsVisible(1);
+				$cmd->setOrder(4);
+				$cmd->setValue($info->getId());
+				$cmd->setConfiguration('infoName', '#'.$info->getId().'#');
+				$cmd->setConfiguration('listValue', 'HDMI 1|HDMI 1;HDMI 2/MHL|HDMI 2/MHL;VGA IN|VGA IN');
+				$cmd->setConfiguration('expliq', "Sélectionne la source vidéo");
+				$cmd->setDisplay('showNameOndashboard','0');
+				$cmd->setDisplay('showNameOnmobile','0');
+				$cmd->setDisplay('showNameOnplan','0');
+				$cmd->setDisplay('showNameOnview','0');
+				$cmd->save();
 			}
 
 			// Information Utilisation lampe 
@@ -166,7 +193,7 @@ class AcerVP extends eqLogic {
 				$info->setUnite('h');
 				$info->setConfiguration('minValue', 0 );
 				$info->setConfiguration('maxValue', self::LAMP_MAX );
-				$info->setOrder(3);
+				$info->setOrder(5);
 				$info->save();
 			}
 
@@ -179,7 +206,7 @@ class AcerVP extends eqLogic {
 				$info->setLogicalId('Mode');
 				$info->setType('info');
 				$info->setSubType('string');
-				$info->setOrder(4);
+				$info->setOrder(6);
 				$info->setIsVisible(0);
 				$info->save();
 			}
@@ -193,7 +220,7 @@ class AcerVP extends eqLogic {
 				$info->setLogicalId('Etat');
 				$info->setType('info');
 				$info->setSubType('string');
-				$info->setOrder(5);
+				$info->setOrder(7);
 				$info->setIsVisible(0);
 				$info->setIsHistorized(1);
 				$info->save();
@@ -257,7 +284,7 @@ class AcerVP extends eqLogic {
 			$strpwd = $this->getConfiguration('UserId') . $this->getConfiguration('MdP') . $challage;
 			log::add('AcerVP', 'debug', 'strpwd = '.$strpwd );
 			
-			if ($strpwd[0] == 'A'){			//	Administrator
+			if ($strpwd[0] == 'a'){			//	Administrator
 				$strpost = "Username=1&Response=";
 			} else {						//	Guest
 				$strpost = "Username=2&Response=";
@@ -346,6 +373,62 @@ class AcerVP extends eqLogic {
 			
 			log::add('AcerVP', 'debug', 'control.tgi (pwr=off) = ' . $content );
 			$this->checkAndUpdateCmd('Power', 0);
+			break;
+		
+		case 'HDMI 1':
+
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $URL_control);
+			curl_setopt($ch, CURLOPT_COOKIE, $VPcookies[0]);
+			curl_setopt($ch, CURLOPT_POST, 1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, 'src=1');
+			curl_setopt($ch, CURLOPT_HEADER  ,1);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER  ,1);
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION  ,0);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+			$content = curl_exec($ch);
+			curl_close($ch);
+			
+			log::add('AcerVP', 'debug', 'control.tgi (src=1-hdmi 1 ) = ' . $content );
+//			$this->checkAndUpdateCmd('Source', 'HDMI 1');
+			break;
+		
+		
+		case 'HDMI 2/MHL':
+
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $URL_control);
+			curl_setopt($ch, CURLOPT_COOKIE, $VPcookies[0]);
+			curl_setopt($ch, CURLOPT_POST, 1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, 'src=2');
+			curl_setopt($ch, CURLOPT_HEADER  ,1);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER  ,1);
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION  ,0);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+			$content = curl_exec($ch);
+			curl_close($ch);
+			
+			log::add('AcerVP', 'debug', 'control.tgi (src=2-hdmi 2 ) = ' . $content );
+//			$this->checkAndUpdateCmd('Source', 'HDMI 2/MHL');
+			break;
+		
+		
+		case 'VGA IN':
+
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $URL_control);
+			curl_setopt($ch, CURLOPT_COOKIE, $VPcookies[0]);
+			curl_setopt($ch, CURLOPT_POST, 1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, 'src=3');
+			curl_setopt($ch, CURLOPT_HEADER  ,1);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER  ,1);
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION  ,0);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+			$content = curl_exec($ch);
+			curl_close($ch);
+			
+			log::add('AcerVP', 'debug', 'control.tgi (src=3-VGA IN ) = ' . $content );
+//			$this->checkAndUpdateCmd('Source', 'VGA IN');
 			break;
 		
 		
@@ -438,11 +521,14 @@ class AcerVPCmd extends cmd {
 			$eqLogic->call_vdp ('Off');
 			break;
 		
+		case 'Set Src':
+			log::add('AcerVP', 'debug', 'Exécution de la commande Set Src');
+			if ((isset($_options['select'])) && ($_options['select'] != '')) $eqLogic->call_vdp ($_options['select']);
+			break;
+			
 		default:
 			log::add('AcerVP', 'debug', 'exécution de la commande Refresh');
 			$eqLogic->call_vdp ('Refresh');
 		}
 	}
 }
-
-
