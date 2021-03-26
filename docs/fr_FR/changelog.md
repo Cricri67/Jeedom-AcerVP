@@ -4,6 +4,10 @@ Liste des versions du plugin AcerVP.
 
 *[Retour à la documentation](index.md)*
 
+## Version 1.03 du 26 mars 2021
+
+Ajout de la fonction de sélection de la source HDMI1/2/VGA
+
 ## Version 1.02 du 30 mars 2020
 
 Mise à jour pour compatibilité php 7.3 (jeeObject)
